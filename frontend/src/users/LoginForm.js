@@ -16,9 +16,26 @@ function LoginForm() {
     const [errorMessage, setErrorMessage] = useState(null)
 
     async function handleSubmit(e) {
-        e.preventDefault()
-       
+        e.preventDefault();
+        const response = await fetch(`http://localhost:5001/authentication/`, {
+            method: 'POST',
+            credentials: 'include',  // so that cookies are included in the request
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(credentials)
+        });
 
+        const data = await response.json();
+
+        if (response.status === 200) {
+            setCurrentUser(data.user)
+            history.push(`/`)
+        } else {
+            setErrorMessage(data.message)
+        }
+
+        // console.log(data);
     }
 
     return (
