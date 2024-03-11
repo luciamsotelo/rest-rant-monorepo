@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useHistory } from "react-router";
+import { CurrentUser } from "../contexts/CurrentUser"
 
 function NewCommentForm({ place, onSubmit }) {
   const [authors, setAuthors] = useState([]);
@@ -28,21 +29,30 @@ function NewCommentForm({ place, onSubmit }) {
       </option>
     );
   });
-
-  function handleSubmit(e) {
-    e.preventDefault();
-    onSubmit(comment);
-    setComment({
-      content: "",
+  
+    
+function handleSubmit(e) {
+  e.preventDefault()
+  onSubmit(comment)
+  setComment({
+      content: '',
       stars: 3,
       rant: false,
-      authorId: authors[0]?.userId,
-    });
-  }
+      authorId: authors[0]?.userId
+  })
+}
 
-  return (
-    <form onSubmit={handleSubmit}>
+const { currentUser } = useContext(CurrentUser)
+
+if(!currentUser){
+  return <p>You must be logged in to leave a rant or rave.</p>
+}
+
+return (
+  <form onSubmit={handleSubmit}>
       <div className="row">
+
+
         <div className="form-group col-sm-12">
           <label htmlFor="content">Content</label>
           <textarea
@@ -58,7 +68,7 @@ function NewCommentForm({ place, onSubmit }) {
         </div>
       </div>
       <div className="row">
-        <div className="form-group col-sm-4">
+        {/* <div className="form-group col-sm-4">
           <label htmlFor="state">Author</label>
           <select
             className="form-control"
@@ -69,7 +79,7 @@ function NewCommentForm({ place, onSubmit }) {
           >
             {authorOptions}
           </select>
-        </div>
+        </div> */}
         <div className="form-group col-sm-4">
           <label htmlFor="stars">Star Rating</label>
           <input
